@@ -1,0 +1,39 @@
+name: do job by user
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: 'domain name'
+        required: true
+      token:
+        description: 'token'
+        required: true
+      jobName:
+        description: 'task name'     
+        required: true
+      jobArg1:
+        description: 'param 1'
+      jobArg2:
+        description: 'param 2'
+      jobArg3:
+        description: 'param 3'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 720
+    steps:
+    - uses: actions/checkout@master
+    
+    - name: Run task
+      if: success()
+      run: |
+        docker run \
+        -e SITE_NAME="${{ github.event.inputs.domain }}" \
+        -e SITE_TOKEN="${{ github.event.inputs.token }}" \
+        -e JOB_NAME="${{ github.event.inputs.jobName }}" \
+        -e JOB_ARG_1="${{ github.event.inputs.jobArg1 }}" \
+        -e JOB_ARG_2="${{ github.event.inputs.jobArg2 }}" \
+        -e JOB_ARG_3="${{ github.event.inputs.jobArg3 }}" \
+        ghcr.io/admicro/hhwjob:latest
