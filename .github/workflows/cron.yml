@@ -1,0 +1,23 @@
+name: Cron every day
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 720
+    steps:
+    - uses: actions/checkout@master
+    
+    - name: Run backup
+      if: success()
+      run: |
+        docker run \
+        -e GDRIVE_FOLDER="${{ secrets.GDRIVE_FOLDER }}" \
+        -e SERVICE_ACCOUNT="${{ secrets.SERVICE_ACCOUNT }}" \
+        -e SITE_URL="${{ secrets.SITE_URL }}" \
+        -e SITE_TOKEN="${{ secrets.SITE_TOKEN }}" \
+        -e MY_REST_TOKEN="${{ secrets.MY_REST_TOKEN }}" \
+        ghcr.io/admicro/backupweb:latest
