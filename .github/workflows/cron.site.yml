@@ -1,0 +1,14 @@
+name: every hour cron
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  cron:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Call wordpress cron route
+        run: |
+          curl --request GET --url '${{ secrets.SITE_URL_0 }}/wp-cron.php?doing_wp_cron'
+        
